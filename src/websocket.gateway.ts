@@ -49,10 +49,10 @@ export class WebsocketGateway
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)
-  handleEvent(@MessageBody() isHidden: boolean): void {
+  handleHiddenUpdate(): void {
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomService.updateHidden(isHidden),
+      data: this.roomService.toggleHidden(),
     });
   }
 

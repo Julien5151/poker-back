@@ -36,8 +36,8 @@ export class RoomService {
     return this.roomState;
   }
 
-  public updateHidden(isHidden: boolean): RoomState {
-    this.roomState.isHidden = isHidden;
+  public toggleHidden(): RoomState {
+    this.roomState.isHidden = !this.roomState.isHidden;
     return this.roomState;
   }
 

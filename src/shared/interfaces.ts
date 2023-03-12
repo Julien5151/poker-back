@@ -24,5 +24,4 @@ export interface UserMessage {
 
 export interface HiddenMessage {
   event: MessageType.HiddenUpdate;
-  data: boolean;
 }
