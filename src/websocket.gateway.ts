@@ -51,9 +51,24 @@ export class WebsocketGateway
     });
   }
 
-  @SubscribeMessage('users_update')
-  handleEvent(@MessageBody() data: User): void {
-    console.log(data);
+  @SubscribeMessage(MessageType.UsersUpdate)
+  handleUserUpdate(@MessageBody() updatedUser: User): void {
+    this.roomState.users = this.roomState.users.map((user) =>
+      user.name === updatedUser.name ? updatedUser : user,
+    );
+    this.broadcastRoomMessage({
+      event: MessageType.RoomUpdate,
+      data: this.roomState,
+    });
+  }
+
+  @SubscribeMessage(MessageType.HiddenUpdate)
+  handleEvent(@MessageBody() isHidden: boolean): void {
+    this.roomState.isHidden = isHidden;
+    this.broadcastRoomMessage({
+      event: MessageType.RoomUpdate,
+      data: this.roomState,
+    });
   }
 
   private broadcastRoomMessage(wsMessage: RoomMessage): void {
