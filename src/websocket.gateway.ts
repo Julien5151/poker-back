@@ -56,6 +56,14 @@ export class WebsocketGateway
     });
   }
 
+  @SubscribeMessage(MessageType.ResetVotes)
+  handleResetVotes(): void {
+    this.broadcastRoomMessage({
+      event: MessageType.RoomUpdate,
+      data: this.roomService.resetVotes(),
+    });
+  }
+
   private broadcastRoomMessage(wsMessage: RoomMessage): void {
     this.server.clients.forEach((clientWs) => {
       clientWs.send(JSON.stringify(wsMessage));

@@ -10,7 +10,11 @@ export interface RoomState {
   isHidden: boolean;
 }
 
-export type WebSocketMessage = RoomMessage | UserMessage | HiddenMessage;
+export type WebSocketMessage =
+  | RoomMessage
+  | UserMessage
+  | HiddenMessage
+  | ResetVotesMessage;
 
 export interface RoomMessage {
   event: MessageType.RoomUpdate;
@@ -24,4 +28,8 @@ export interface UserMessage {
 
 export interface HiddenMessage {
   event: MessageType.HiddenUpdate;
+}
+
+export interface ResetVotesMessage {
+  event: MessageType.ResetVotes;
 }

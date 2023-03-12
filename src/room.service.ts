@@ -41,6 +41,14 @@ export class RoomService {
     return this.roomState;
   }
 
+  public resetVotes(): RoomState {
+    this.roomState.users = this.roomState.users.map((usr) => ({
+      ...usr,
+      vote: null,
+    }));
+    return this.roomState;
+  }
+
   public resetRoom(): RoomState {
     this.roomState = roomStateInitialState;
     return this.roomState;
