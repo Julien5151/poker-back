@@ -20,9 +20,7 @@ export class WebsocketGateway
   @WebSocketServer() server: WsServer;
   private connectedClients = new Map<WebSocket, string>();
 
-  constructor(private readonly roomService: RoomService) {
-    console.log('instanciation du websocket gateway');
-  }
+  constructor(private readonly roomService: RoomService) {}
 
   async handleConnection(clientWs: WebSocket): Promise<void> {
     const newUserName = `Philippe_${Math.floor(Math.random() * 100000)}`;
