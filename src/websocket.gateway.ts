@@ -7,67 +7,54 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { WebSocket, WebSocketServer as WsServer } from 'ws';
+import { RoomService } from './room.service';
 import { MessageType } from './shared/enums';
-import { RoomMessage, RoomState, User } from './shared/interfaces';
+import { RoomMessage, User } from './shared/interfaces';
 
 @WebSocketGateway({
-  path: '/start_web_socket',
-  cors: {
-    origin: '*',
-  },
+  path: '/web_socket',
 })
 export class WebsocketGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() server: WsServer;
-
-  private roomState: RoomState = {
-    users: [],
-    isHidden: true,
-  };
   private connectedClients = new Map<WebSocket, string>();
 
-  async handleConnection(clientWs: WebSocket) {
-    const userName = `Philippe_${Math.random()}`;
-    this.connectedClients.set(clientWs, userName);
-    this.roomState.users = [
-      ...this.roomState.users,
-      { name: userName, vote: null },
-    ];
+  constructor(private readonly roomService: RoomService) {
+    console.log('instanciation du websocket gateway');
+  }
+
+  async handleConnection(clientWs: WebSocket): Promise<void> {
+    const newUserName = `Philippe_${Math.floor(Math.random() * 100000)}`;
+    this.connectedClients.set(clientWs, newUserName);
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomState,
+      data: this.roomService.addUser(newUserName),
     });
   }
-  async handleDisconnect(clientWs: WebSocket) {
+
+  async handleDisconnect(clientWs: WebSocket): Promise<void> {
     const disconnectedUsername = this.connectedClients.get(clientWs);
-    this.roomState.users = this.roomState.users.filter(
-      (user) => user.name !== disconnectedUsername,
-    );
     this.connectedClients.delete(clientWs);
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomState,
+      data: this.roomService.removeUser(disconnectedUsername),
     });
   }
 
   @SubscribeMessage(MessageType.UsersUpdate)
   handleUserUpdate(@MessageBody() updatedUser: User): void {
-    this.roomState.users = this.roomState.users.map((user) =>
-      user.name === updatedUser.name ? updatedUser : user,
-    );
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomState,
+      data: this.roomService.updateUser(updatedUser),
     });
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)
   handleEvent(@MessageBody() isHidden: boolean): void {
-    this.roomState.isHidden = isHidden;
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomState,
+      data: this.roomService.updateHidden(isHidden),
     });
   }
 
