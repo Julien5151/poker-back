@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { RoomState, User } from './shared/interfaces';
+import { Vote } from './shared/enums';
+import { RoomState } from './shared/interfaces';
 
 const roomStateInitialState: RoomState = {
   users: [],
@@ -14,24 +15,31 @@ export class RoomService {
     return this.roomState;
   }
 
-  public addUser(userName: string): RoomState {
+  public addUser(userId: string, userName: string): RoomState {
     this.roomState.users = [
       ...this.roomState.users,
-      { name: userName, vote: null },
+      { id: userId, name: userName, vote: null },
     ];
     return this.roomState;
   }
 
-  public updateUser(user: User): RoomState {
+  public updateUserVote(userId: string, vote: Vote): RoomState {
     this.roomState.users = this.roomState.users.map((usr) =>
-      usr.name === user.name ? user : usr,
+      usr.id === userId ? { ...usr, vote } : usr,
     );
     return this.roomState;
   }
 
-  public removeUser(userName: string): RoomState {
+  public updateUserName(userId: string, name: string): RoomState {
+    this.roomState.users = this.roomState.users.map((usr) =>
+      usr.id === userId ? { ...usr, name } : usr,
+    );
+    return this.roomState;
+  }
+
+  public removeUser(userId: string): RoomState {
     this.roomState.users = this.roomState.users.filter(
-      (user) => user.name !== userName,
+      (user) => user.id !== userId,
     );
     return this.roomState;
   }
@@ -42,8 +50,8 @@ export class RoomService {
   }
 
   public resetVotes(): RoomState {
-    this.roomState.users = this.roomState.users.map((usr) => ({
-      ...usr,
+    this.roomState.users = this.roomState.users.map((user) => ({
+      ...user,
       vote: null,
     }));
     return this.roomState;

@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,10 +7,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { v4 as uuidv4 } from 'uuid';
 import { WebSocket, WebSocketServer as WsServer } from 'ws';
 import { RoomService } from './room.service';
-import { MessageType } from './shared/enums';
-import { RoomMessage, User } from './shared/interfaces';
+import { MessageType, Vote } from './shared/enums';
+import { RoomMessage } from './shared/interfaces';
 
 @WebSocketGateway({
   path: '/web_socket',
@@ -23,28 +25,45 @@ export class WebsocketGateway
   constructor(private readonly roomService: RoomService) {}
 
   async handleConnection(clientWs: WebSocket): Promise<void> {
+    const newUserId = uuidv4();
     const newUserName = `Philippe_${Math.floor(Math.random() * 100000)}`;
-    this.connectedClients.set(clientWs, newUserName);
+    this.connectedClients.set(clientWs, newUserId);
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomService.addUser(newUserName),
+      data: this.roomService.addUser(newUserId, newUserName),
     });
   }
 
   async handleDisconnect(clientWs: WebSocket): Promise<void> {
-    const disconnectedUsername = this.connectedClients.get(clientWs);
+    const disconnectedUserId = this.connectedClients.get(clientWs);
     this.connectedClients.delete(clientWs);
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomService.removeUser(disconnectedUsername),
+      data: this.roomService.removeUser(disconnectedUserId),
     });
   }
 
-  @SubscribeMessage(MessageType.UsersUpdate)
-  handleUserUpdate(@MessageBody() updatedUser: User): void {
+  @SubscribeMessage(MessageType.UserVoteUpdate)
+  handleUserVoteUpdate(
+    @MessageBody() vote: Vote,
+    @ConnectedSocket() client: WebSocket,
+  ): void {
+    const updatedUserId = this.connectedClients.get(client);
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
-      data: this.roomService.updateUser(updatedUser),
+      data: this.roomService.updateUserVote(updatedUserId, vote),
+    });
+  }
+
+  @SubscribeMessage(MessageType.UserNameUpdate)
+  handleUserNameUpdate(
+    @MessageBody() name: string,
+    @ConnectedSocket() client: WebSocket,
+  ): void {
+    const updatedUserId = this.connectedClients.get(client);
+    this.broadcastRoomMessage({
+      event: MessageType.RoomUpdate,
+      data: this.roomService.updateUserName(updatedUserId, name),
     });
   }
 

@@ -1,6 +1,7 @@
 import { MessageType, Vote } from './enums';
 
 export interface User {
+  id: string;
   name: string;
   vote: Vote | null;
 }
@@ -12,7 +13,8 @@ export interface RoomState {
 
 export type WebSocketMessage =
   | RoomMessage
-  | UserMessage
+  | UserVoteMessage
+  | UserNameMessage
   | HiddenMessage
   | ResetVotesMessage;
 
@@ -21,9 +23,14 @@ export interface RoomMessage {
   data: RoomState;
 }
 
-export interface UserMessage {
-  event: MessageType.UsersUpdate;
-  data: User;
+export interface UserVoteMessage {
+  event: MessageType.UserVoteUpdate;
+  data: Vote;
+}
+
+export interface UserNameMessage {
+  event: MessageType.UserNameUpdate;
+  data: string;
 }
 
 export interface HiddenMessage {
