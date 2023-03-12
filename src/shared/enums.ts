@@ -6,11 +6,11 @@ export enum Vote {
   Eight = '8',
   Thirteen = '13',
   TwentyOne = '21',
-  Graive = 'Graive',
-  MiddleFinger = 'MiddleFinger',
-  Quezac = 'Quezac',
-  Quit = 'Quit',
-  Surf = 'Surf',
+  Graive = '🟥',
+  MiddleFinger = '🖕',
+  Quezac = '🍾',
+  Quit = '👋',
+  Surf = '🏄',
 }
 
 export enum MessageType {
