@@ -10,7 +10,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocket, WebSocketServer as WsServer } from 'ws';
 import { RoomService } from './room.service';
-import { MessageType, UserEffect, Vote } from './shared/enums';
+import { MessageType, UserEffect, VoteValue } from './shared/enums';
 import { RoomMessage } from './shared/interfaces';
 
 @WebSocketGateway({
@@ -45,7 +45,7 @@ export class WebsocketGateway
 
   @SubscribeMessage(MessageType.UserVoteUpdate)
   handleUserVoteUpdate(
-    @MessageBody() vote: Vote,
+    @MessageBody() vote: VoteValue,
     @ConnectedSocket() client: WebSocket,
   ): void {
     const updatedUserId = this.connectedClients.get(client);
