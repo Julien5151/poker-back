@@ -37,7 +37,10 @@ export class RoomService {
     return this.roomState;
   }
 
-  public updateUserEffect(userId: string, effect: UserEffect): RoomState {
+  public updateUserEffect(
+    userId: string,
+    effect: UserEffect | null,
+  ): RoomState {
     this.roomState.users = this.roomState.users.map((usr) =>
       usr.id === userId ? { ...usr, effect } : usr,
     );

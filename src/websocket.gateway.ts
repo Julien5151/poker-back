@@ -77,6 +77,12 @@ export class WebsocketGateway
       event: MessageType.RoomUpdate,
       data: this.roomService.updateUserEffect(updatedUserId, effect),
     });
+    setTimeout(() => {
+      this.broadcastRoomMessage({
+        event: MessageType.RoomUpdate,
+        data: this.roomService.updateUserEffect(updatedUserId, null),
+      });
+    }, 1500);
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)
