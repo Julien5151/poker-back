@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Vote } from './shared/enums';
+import { UserEffect, Vote } from './shared/enums';
 import { RoomState } from './shared/interfaces';
 
 const roomStateInitialState: RoomState = {
@@ -18,7 +18,7 @@ export class RoomService {
   public addUser(userId: string, userName: string): RoomState {
     this.roomState.users = [
       ...this.roomState.users,
-      { id: userId, name: userName, vote: null },
+      { id: userId, name: userName, vote: null, effect: null },
     ];
     return this.roomState;
   }
@@ -33,6 +33,13 @@ export class RoomService {
   public updateUserName(userId: string, name: string): RoomState {
     this.roomState.users = this.roomState.users.map((usr) =>
       usr.id === userId ? { ...usr, name } : usr,
+    );
+    return this.roomState;
+  }
+
+  public updateUserEffect(userId: string, effect: UserEffect): RoomState {
+    this.roomState.users = this.roomState.users.map((usr) =>
+      usr.id === userId ? { ...usr, effect } : usr,
     );
     return this.roomState;
   }

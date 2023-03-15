@@ -10,7 +10,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocket, WebSocketServer as WsServer } from 'ws';
 import { RoomService } from './room.service';
-import { MessageType, Vote } from './shared/enums';
+import { MessageType, UserEffect, Vote } from './shared/enums';
 import { RoomMessage } from './shared/interfaces';
 
 @WebSocketGateway({
@@ -64,6 +64,18 @@ export class WebsocketGateway
     this.broadcastRoomMessage({
       event: MessageType.RoomUpdate,
       data: this.roomService.updateUserName(updatedUserId, name),
+    });
+  }
+
+  @SubscribeMessage(MessageType.UserEffectUpdate)
+  handleUserEffectUpdate(
+    @MessageBody() effect: UserEffect,
+    @ConnectedSocket() client: WebSocket,
+  ): void {
+    const updatedUserId = this.connectedClients.get(client);
+    this.broadcastRoomMessage({
+      event: MessageType.RoomUpdate,
+      data: this.roomService.updateUserEffect(updatedUserId, effect),
     });
   }
 
