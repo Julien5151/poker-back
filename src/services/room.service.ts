@@ -64,6 +64,7 @@ export class RoomService {
       ...user,
       vote: null,
     }));
+    this.roomState.isHidden = true;
     return this.roomState;
   }
 
