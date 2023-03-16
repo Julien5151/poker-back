@@ -23,7 +23,8 @@ export type WebSocketMessage =
   | UserNameMessage
   | UserEffectMessage
   | HiddenMessage
-  | ResetVotesMessage;
+  | ResetVotesMessage
+  | PingMessage;
 
 export interface RoomMessage {
   event: MessageType.RoomUpdate;
@@ -51,4 +52,8 @@ export interface HiddenMessage {
 
 export interface ResetVotesMessage {
   event: MessageType.ResetVotes;
+}
+
+export interface PingMessage {
+  event: MessageType.Ping;
 }
