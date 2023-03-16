@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserEffect, VoteValue } from './shared/enums';
-import { RoomState } from './shared/interfaces';
+import { UserEffect, VoteValue } from '../shared/enums';
+import { RoomState } from '../shared/interfaces';
 
 const roomStateInitialState: RoomState = {
   users: [],
