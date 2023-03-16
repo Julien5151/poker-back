@@ -7,7 +7,7 @@ import { WebSocket } from 'ws';
 export class BroadcastService {
   private connectedClients = new Map<WebSocket, string>();
   private intervalId: NodeJS.Timer;
-  private readonly PING_INTERVAL = 30000;
+  private readonly PING_INTERVAL = 5000;
 
   public addConnectedClient(clientWs: WebSocket, clientId: string): void {
     this.connectedClients.set(clientWs, clientId);
@@ -30,7 +30,6 @@ export class BroadcastService {
       // Rest ping interval after each message sent
       this.resetPing();
     } catch (error) {
-      console.log(error);
       console.error('Failed to stringify websocket message before sending it');
     }
   }
