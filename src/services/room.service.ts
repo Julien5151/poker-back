@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { UserEffect, VoteValue } from '../shared/enums';
 import { Room } from '../shared/interfaces';
 
 @Injectable()
 export class RoomService {
   private rooms = new Map<string, Room>();
+
+  // TEMP - only while no multiroom in frontend
+  public createRoom(id: string): Room {
+    const newRoom: Room = {
+      id,
+      users: [],
+      isHidden: true,
+      intervalId: null,
+    };
+    this.rooms.set(id, newRoom);
+    return newRoom;
+  }
 
   public getRoom(id: string): Room {
     return this.rooms.get(id);
@@ -71,13 +82,13 @@ export class RoomService {
   }
 
   public resetRoom(roomId: string): Room {
-    const newRoom: Room = {
-      id: uuidv4(),
+    const resetedRoom: Room = {
+      id: roomId,
       users: [],
       isHidden: true,
       intervalId: null,
     };
-    this.rooms.set(roomId, newRoom);
-    return newRoom;
+    this.rooms.set(roomId, resetedRoom);
+    return resetedRoom;
   }
 }
