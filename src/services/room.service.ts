@@ -1,75 +1,83 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { UserEffect, VoteValue } from '../shared/enums';
-import { RoomState } from '../shared/interfaces';
-
-const roomStateInitialState: RoomState = {
-  users: [],
-  isHidden: true,
-};
+import { Room } from '../shared/interfaces';
 
 @Injectable()
 export class RoomService {
-  private roomState: RoomState = roomStateInitialState;
+  private rooms = new Map<string, Room>();
 
-  public getRoomState(): RoomState {
-    return this.roomState;
+  public getRoom(id: string): Room {
+    return this.rooms.get(id);
   }
 
-  public addUser(userId: string, userName: string): RoomState {
-    this.roomState.users = [
-      ...this.roomState.users,
+  public addUser(roomId: string, userId: string, userName: string): Room {
+    const room = this.rooms.get(roomId);
+    room.users = [
+      ...room.users,
       { id: userId, name: userName, vote: null, effect: null },
     ];
-    return this.roomState;
+    return room;
   }
 
-  public updateUserVote(userId: string, vote: VoteValue): RoomState {
-    this.roomState.users = this.roomState.users.map((usr) =>
+  public updateUserVote(roomId: string, userId: string, vote: VoteValue): Room {
+    const room = this.rooms.get(roomId);
+    room.users = room.users.map((usr) =>
       usr.id === userId ? { ...usr, vote } : usr,
     );
-    return this.roomState;
+    return room;
   }
 
-  public updateUserName(userId: string, name: string): RoomState {
-    this.roomState.users = this.roomState.users.map((usr) =>
+  public updateUserName(roomId: string, userId: string, name: string): Room {
+    const room = this.rooms.get(roomId);
+    room.users = room.users.map((usr) =>
       usr.id === userId ? { ...usr, name } : usr,
     );
-    return this.roomState;
+    return room;
   }
 
   public updateUserEffect(
+    roomId: string,
     userId: string,
     effect: UserEffect | null,
-  ): RoomState {
-    this.roomState.users = this.roomState.users.map((usr) =>
+  ): Room {
+    const room = this.rooms.get(roomId);
+    room.users = room.users.map((usr) =>
       usr.id === userId ? { ...usr, effect } : usr,
     );
-    return this.roomState;
+    return room;
   }
 
-  public removeUser(userId: string): RoomState {
-    this.roomState.users = this.roomState.users.filter(
-      (user) => user.id !== userId,
-    );
-    return this.roomState;
+  public removeUser(roomId: string, userId: string): Room {
+    const room = this.rooms.get(roomId);
+    room.users = room.users.filter((user) => user.id !== userId);
+    return room;
   }
 
-  public toggleHidden(): RoomState {
-    this.roomState.isHidden = !this.roomState.isHidden;
-    return this.roomState;
+  public toggleHidden(roomId: string): Room {
+    const room = this.rooms.get(roomId);
+    room.isHidden = !room.isHidden;
+    return room;
   }
 
-  public resetVotes(): RoomState {
-    this.roomState.users = this.roomState.users.map((user) => ({
+  public resetVotes(roomId: string): Room {
+    const room = this.rooms.get(roomId);
+    room.users = room.users.map((user) => ({
       ...user,
       vote: null,
     }));
-    this.roomState.isHidden = true;
-    return this.roomState;
+    room.isHidden = true;
+    return room;
   }
 
-  public resetRoom(): RoomState {
-    this.roomState = roomStateInitialState;
-    return this.roomState;
+  public resetRoom(roomId: string): Room {
+    const newRoom: Room = {
+      id: uuidv4(),
+      users: [],
+      isHidden: true,
+      intervalId: null,
+    };
+    this.rooms.set(roomId, newRoom);
+    return newRoom;
   }
 }

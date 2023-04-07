@@ -12,9 +12,11 @@ export interface Vote {
   weight: number;
 }
 
-export interface RoomState {
+export interface Room {
+  id: string;
   users: User[];
   isHidden: boolean;
+  intervalId: NodeJS.Timer | null;
 }
 
 export type WebSocketMessage =
@@ -28,7 +30,7 @@ export type WebSocketMessage =
 
 export interface RoomMessage {
   event: MessageType.RoomUpdate;
-  data: RoomState;
+  data: Room;
 }
 
 export interface UserVoteMessage {

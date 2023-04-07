@@ -1,43 +1,60 @@
 import { Injectable } from '@nestjs/common';
+import { BoundIds } from 'src/interfaces/bound-ids.interface';
 import { MessageType } from 'src/shared/enums';
 import { PingMessage, RoomMessage } from 'src/shared/interfaces';
 import { WebSocket } from 'ws';
+import { RoomService } from './room.service';
 
 @Injectable()
 export class BroadcastService {
-  private connectedClients = new Map<WebSocket, string>();
-  private intervalId: NodeJS.Timer;
+  private connectedClients = new Map<WebSocket, BoundIds>();
   private readonly PING_INTERVAL = 30000;
 
-  public addConnectedClient(clientWs: WebSocket, clientId: string): void {
-    this.connectedClients.set(clientWs, clientId);
+  constructor(private readonly roomService: RoomService) {}
+
+  public addConnectedClient(clientWs: WebSocket, boundIds: BoundIds): void {
+    this.connectedClients.set(clientWs, boundIds);
   }
 
   public removeConnectedClient(clientWs: WebSocket): void {
     this.connectedClients.delete(clientWs);
   }
 
-  public getClientId(clientWs: WebSocket): string {
+  public getClientUserBoundIds(clientWs: WebSocket): BoundIds {
     return this.connectedClients.get(clientWs);
   }
 
-  public broadcastRoomMessage(wsMessage: RoomMessage | PingMessage): void {
+  public broadcastMessage(
+    clientWsOrRoomId: WebSocket | string,
+    wsMessage: RoomMessage | PingMessage,
+  ): void {
     try {
       const stringifiedMessage = JSON.stringify(wsMessage);
-      this.connectedClients.forEach((clientId, clientWs) => {
-        clientWs.send(stringifiedMessage);
+      // Target clients based on websocket or room id
+      const roomId =
+        clientWsOrRoomId instanceof WebSocket
+          ? this.connectedClients.get(clientWsOrRoomId).roomId
+          : clientWsOrRoomId;
+      const clientsFromRoom = Array.from(this.connectedClients).filter(
+        ([, boundIds]) => {
+          return boundIds.roomId === roomId;
+        },
+      );
+      clientsFromRoom.forEach(([ws]) => {
+        ws.send(stringifiedMessage);
       });
-      // Rest ping interval after each message sent
-      this.resetPing();
+      // Reset ping interval after each message sent
+      this.resetPing(roomId);
     } catch (error) {
       console.error('Failed to stringify websocket message before sending it');
     }
   }
 
-  private resetPing(): void {
-    if (this.intervalId) globalThis.clearInterval(this.intervalId);
-    this.intervalId = globalThis.setInterval(() => {
-      this.broadcastRoomMessage({ event: MessageType.Ping });
+  private resetPing(roomId: string): void {
+    const room = this.roomService.getRoom(roomId);
+    if (room.intervalId) globalThis.clearInterval(room.intervalId);
+    room.intervalId = globalThis.setInterval(() => {
+      this.broadcastMessage(roomId, { event: MessageType.Ping });
     }, this.PING_INTERVAL);
   }
 }
