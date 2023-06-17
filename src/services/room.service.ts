@@ -18,6 +18,10 @@ export class RoomService {
     return newRoom;
   }
 
+  public deleteRoom(id: string): boolean {
+    return this.rooms.delete(id);
+  }
+
   public getRoom(id: string): Room {
     return this.rooms.get(id);
   }
