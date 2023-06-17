@@ -1,23 +1,7 @@
-import { MessageType, UserEffect, VoteValue } from './enums';
-
-export interface User {
-  id: string;
-  name: string;
-  vote: VoteValue | null;
-  effect: UserEffect | null;
-}
-
-export interface Vote {
-  value: VoteValue;
-  weight: number;
-}
-
-export interface Room {
-  id: string;
-  users: User[];
-  isHidden: boolean;
-  intervalId: NodeJS.Timer | null;
-}
+import { MessageType } from '../enums/message-type.enum';
+import { UserEffect } from '../enums/user-effect.enum';
+import { VoteValue } from '../enums/vote-value.enum';
+import { Room } from './room.interface';
 
 export type WebSocketMessage =
   | RoomMessage

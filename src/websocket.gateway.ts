@@ -10,7 +10,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './services/broadcast.service';
 import { RoomService } from './services/room.service';
-import { MessageType, UserEffect, VoteValue } from './shared/enums';
+import {
+  MessageType,
+  UserEffect,
+  VoteValue,
+} from './shared/enums/vote-value.enum';
 
 @WebSocketGateway({
   path: '/web_socket',

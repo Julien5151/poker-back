@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { BoundIds } from 'src/interfaces/bound-ids.interface';
-import { MessageType } from 'src/shared/enums';
-import { PingMessage, RoomMessage } from 'src/shared/interfaces';
+import { UserId } from 'src/shared/interfaces/user.interface';
 import { WebSocket } from 'ws';
 import { RoomService } from './room.service';
 
 @Injectable()
 export class BroadcastService {
-  private connectedClients = new Map<WebSocket, BoundIds>();
+  private connectedClients = new Map<UserId, WebSocket>();
   private readonly PING_INTERVAL = 30000;
 
   constructor(private readonly roomService: RoomService) {}
 
-  public addConnectedClient(clientWs: WebSocket, boundIds: BoundIds): void {
+  public addConnectedClient(clientWs: WebSocket): void {
     this.connectedClients.set(clientWs, boundIds);
   }
 
