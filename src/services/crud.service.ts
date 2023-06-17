@@ -1,21 +1,21 @@
 type EntityId = string;
 
 export abstract class CrudService<T extends { id: EntityId }> {
-  private entities = new Map<EntityId, T>();
+  protected entities = new Map<EntityId, T>();
 
-  protected abstract new(...args: any[]): T;
+  public abstract new(...args: any[]): T;
 
-  protected create(): T {
+  public create(): T {
     const newEntity = this.new();
     this.entities.set(newEntity.id, newEntity);
     return newEntity;
   }
 
-  protected get(id: EntityId): T {
+  public get(id: EntityId): T | undefined {
     return this.entities.get(id);
   }
 
-  protected update(id: EntityId, entityUpdate: Partial<T>): T {
+  public update(id: EntityId, entityUpdate: Partial<T>): T {
     const updatedEntity: T = {
       ...this.get(id),
       ...entityUpdate,
@@ -24,7 +24,7 @@ export abstract class CrudService<T extends { id: EntityId }> {
     return updatedEntity;
   }
 
-  protected delete(id: EntityId): boolean {
+  public delete(id: EntityId): boolean {
     return this.entities.delete(id);
   }
 }

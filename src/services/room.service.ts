@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Room, RoomId } from 'src/shared/interfaces/room.interface';
+import { UserId } from 'src/shared/interfaces/user.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { CrudService } from './crud.service';
 
@@ -14,5 +15,9 @@ export class RoomService extends CrudService<Room> {
       intervalId: null,
     };
     return room;
+  }
+
+  public getUserIds(id: RoomId): Array<UserId> {
+    return this.entities.get(id).userIds;
   }
 }
