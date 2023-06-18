@@ -1,6 +1,5 @@
-import { UserId } from './user.interface';
-
-export type RoomName = string;
+import { RoomName } from 'src/shared/types/room-name.type';
+import { UserId } from 'src/shared/types/user-id.type';
 
 export interface Room {
   name: RoomName;

@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
-import { UserId } from 'src/shared/interfaces/user.interface';
 import { ROOM_NAME_REGEX } from 'src/shared/regex/room-name.regex';
+import { UserId } from 'src/shared/types/user-id.type';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
 import { RoomService } from './room.service';

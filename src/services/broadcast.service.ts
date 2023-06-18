@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MessageType } from 'src/shared/enums/message-type.enum';
-import { RoomUpdate } from 'src/shared/interfaces/room-update.interface';
-import { RoomName } from 'src/shared/interfaces/room.interface';
-import { UserId } from 'src/shared/interfaces/user.interface';
+import { RoomState } from 'src/shared/interfaces/room-state.interface';
 import {
   PingMessage,
   RoomMessage,
 } from 'src/shared/interfaces/ws-message.interface';
+import { RoomName } from 'src/shared/types/room-name.type';
+import { UserId } from 'src/shared/types/user-id.type';
 import { WebSocket } from 'ws';
 import { RoomService } from './room.service';
 import { UserService } from './user.service';
@@ -66,14 +66,14 @@ export class BroadcastService {
     const roomUsers = room.userIds.map((userId) =>
       this.userService.get(userId),
     );
-    const roomUpdateMessage: RoomUpdate = {
+    const roomStateMessage: RoomState = {
       name,
       users: roomUsers,
       isHidden,
     };
     this.broadcastToRoom(name, {
       event: MessageType.RoomUpdate,
-      data: roomUpdateMessage,
+      data: roomStateMessage,
     });
   }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Room, RoomName } from 'src/shared/interfaces/room.interface';
-import { UserId } from 'src/shared/interfaces/user.interface';
+import { Room } from 'src/interfaces/room.interface';
+import { RoomName } from 'src/shared/types/room-name.type';
+import { UserId } from 'src/shared/types/user-id.type';
 import { CrudService } from './crud.service';
 
 @Injectable()

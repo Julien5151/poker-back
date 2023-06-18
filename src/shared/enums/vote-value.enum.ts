@@ -6,8 +6,8 @@ export enum VoteValue {
   Eight = '8',
   Thirteen = '13',
   TwentyOne = '21',
+  Shrug = '🤷',
   Graive = '🟥',
   MiddleFinger = '🖕',
-  Shrug = '🤷',
   Surf = '🏄',
 }
