@@ -5,10 +5,8 @@ export abstract class CrudService<T extends { id: EntityId }> {
 
   public abstract new(...args: any[]): T;
 
-  public create(): T {
-    const newEntity = this.new();
-    this.entities.set(newEntity.id, newEntity);
-    return newEntity;
+  protected set(entity: T): void {
+    this.entities.set(entity.id, entity);
   }
 
   public get(id: EntityId): T | undefined {

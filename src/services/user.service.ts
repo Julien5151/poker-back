@@ -12,6 +12,7 @@ export class UserService extends CrudService<User> {
       vote: null,
       effect: null,
     };
+    super.set(user);
     return user;
   }
 }

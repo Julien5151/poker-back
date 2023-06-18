@@ -14,6 +14,7 @@ export class RoomService extends CrudService<Room> {
       isHidden: true,
       intervalId: null,
     };
+    super.set(room);
     return room;
   }
 
