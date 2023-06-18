@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
 import { UserId } from 'src/shared/interfaces/user.interface';
+import { ROOM_NAME_REGEX } from 'src/shared/regex/room-name.regex';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
 import { RoomService } from './room.service';
@@ -28,8 +29,27 @@ export class PokerService {
     this.userService.delete(disconnectedUserId);
     this.broadcastService.removeConnectedClient(disconnectedUserId);
     if (updatedRoom) {
-      this.broadcastService.broadcastRoomUpdate(updatedRoom.id);
+      this.broadcastService.broadcastRoomUpdate(updatedRoom.name);
     }
+  }
+
+  public handleUserJoinRoom(roomName: string, websocket: WebSocket): void {
+    if (!!roomName.match(ROOM_NAME_REGEX))
+      throw new BadRequestException('Invalid room name');
+    const userId = this.broadcastService.getUserIdFromWs(websocket);
+    const currentRoom = this.roomService.getRoomFromUserId(userId);
+    if (currentRoom) {
+      this.roomService.removeUser(userId);
+      this.broadcastService.broadcastRoomUpdate(currentRoom.name);
+    }
+    const targetRoom = this.roomService.get(roomName);
+    if (targetRoom) {
+      this.roomService.addUser(userId, targetRoom.name);
+    } else {
+      this.roomService.new(roomName);
+      this.roomService.addUser(userId, roomName);
+    }
+    this.broadCastToRoomOfUser(userId);
   }
 
   public handleUserVoteUpdate(vote: VoteValue, websocket: WebSocket): void {
@@ -58,7 +78,7 @@ export class PokerService {
       this.broadcastService.getUserIdFromWs(websocket);
     const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
     if (room) {
-      this.roomService.update(room.id, { isHidden: !room.isHidden });
+      this.roomService.update(room.name, { isHidden: !room.isHidden });
       this.broadCastToRoomOfUser(userInitiatingActionId);
     }
   }
@@ -77,9 +97,9 @@ export class PokerService {
   }
 
   private broadCastToRoomOfUser(userId: UserId): void {
-    const updatedUserRoomId = this.roomService.getRoomFromUserId(userId)?.id;
-    if (updatedUserRoomId) {
-      this.broadcastService.broadcastRoomUpdate(updatedUserRoomId);
+    const userRoomName = this.roomService.getRoomFromUserId(userId)?.name;
+    if (userRoomName) {
+      this.broadcastService.broadcastRoomUpdate(userRoomName);
     }
   }
 }

@@ -28,6 +28,14 @@ export class WebsocketGateway
     this.pokerService.handleUserDisconnection(clientWs);
   }
 
+  @SubscribeMessage(MessageType.UserJoinRoom)
+  handleUserJoinRoom(
+    @MessageBody() roomName: string,
+    @ConnectedSocket() client: WebSocket,
+  ): void {
+    this.pokerService.handleUserJoinRoom(roomName, client);
+  }
+
   @SubscribeMessage(MessageType.UserVoteUpdate)
   handleUserVoteUpdate(
     @MessageBody() vote: VoteValue,

@@ -1,12 +1,16 @@
 type EntityId = string;
 
-export abstract class CrudService<T extends { id: EntityId }> {
+export abstract class CrudService<
+  // TO DO : REWORK TO CHECK IT HAS EITHER ONE OR THE OTHER BUT NOT BOTH
+  T extends { id?: EntityId; name?: EntityId },
+> {
   protected entities = new Map<EntityId, T>();
 
   public abstract new(...args: any[]): T;
 
   protected set(entity: T): void {
-    this.entities.set(entity.id, entity);
+    const identifier = entity.id ?? entity.name;
+    this.entities.set(identifier, entity);
   }
 
   public get(id: EntityId): T | undefined {

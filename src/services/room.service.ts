@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Room, RoomId } from 'src/shared/interfaces/room.interface';
+import { Room, RoomName } from 'src/shared/interfaces/room.interface';
 import { UserId } from 'src/shared/interfaces/user.interface';
-import { v4 as uuidv4 } from 'uuid';
 import { CrudService } from './crud.service';
 
 @Injectable()
 export class RoomService extends CrudService<Room> {
-  public override new(name: string): Room {
+  public override new(name: RoomName): Room {
     const room: Room = {
-      id: uuidv4() as RoomId,
       name,
       userIds: [],
       isHidden: true,
@@ -18,8 +16,8 @@ export class RoomService extends CrudService<Room> {
     return room;
   }
 
-  public getUserIds(roomId: RoomId): UserId[] {
-    return this.entities.get(roomId).userIds;
+  public getUserIds(roomName: RoomName): UserId[] {
+    return this.entities.get(roomName).userIds;
   }
 
   public getRoomFromUserId(userId: UserId): Room | undefined {
@@ -36,16 +34,16 @@ export class RoomService extends CrudService<Room> {
     const room = this.getRoomFromUserId(userId);
     const updatedUserIds = room.userIds.filter((usId) => usId !== userId);
     if (updatedUserIds.length === 0) {
-      this.delete(room.id);
+      this.delete(room.name);
       return null;
     }
-    return this.update(room.id, {
+    return this.update(room.name, {
       userIds: updatedUserIds,
     });
   }
 
-  public addUser(userId: UserId, roomId: RoomId): Room {
-    const room = this.get(roomId);
+  public addUser(userId: UserId, roomName: RoomName): Room {
+    const room = this.get(roomName);
     room.userIds.push(userId);
     return room;
   }

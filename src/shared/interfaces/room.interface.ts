@@ -1,10 +1,9 @@
 import { UserId } from './user.interface';
 
-export type RoomId = string;
+export type RoomName = string;
 
 export interface Room {
-  id: RoomId;
-  name: string;
+  name: RoomName;
   userIds: UserId[];
   isHidden: boolean;
   intervalId: NodeJS.Timer | null;

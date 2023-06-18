@@ -1,9 +1,8 @@
-import { RoomId } from './room.interface';
+import { RoomName } from './room.interface';
 import { User } from './user.interface';
 
 export interface RoomUpdate {
-  id: RoomId;
-  name: string;
+  name: RoomName;
   users: User[];
   isHidden: boolean;
 }
