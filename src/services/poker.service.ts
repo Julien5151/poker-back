@@ -34,7 +34,7 @@ export class PokerService {
   }
 
   public handleUserJoinRoom(roomName: string, websocket: WebSocket): void {
-    if (!!roomName.match(ROOM_NAME_REGEX))
+    if (!roomName.match(ROOM_NAME_REGEX))
       throw new BadRequestException('Invalid room name');
     const userId = this.broadcastService.getUserIdFromWs(websocket);
     const currentRoom = this.roomService.getRoomFromUserId(userId);
