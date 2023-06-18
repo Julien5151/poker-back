@@ -1,1 +1,1 @@
-export const ROOM_NAME_REGEX = /^[a-z\-[0-9]]+$/;
+export const ROOM_NAME_REGEX = /^[a-z\-0-9]+$/;
