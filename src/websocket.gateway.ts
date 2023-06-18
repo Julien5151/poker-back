@@ -21,11 +21,11 @@ export class WebsocketGateway
   constructor(private readonly pokerService: PokerService) {}
 
   async handleConnection(clientWs: WebSocket): Promise<void> {
-    this.pokerService.connectNewUser(clientWs);
+    this.pokerService.handleNewUserConnection(clientWs);
   }
 
   async handleDisconnect(clientWs: WebSocket): Promise<void> {
-    this.pokerService.disconnectUser(clientWs);
+    this.pokerService.handleUserDisconnection(clientWs);
   }
 
   @SubscribeMessage(MessageType.UserVoteUpdate)
@@ -57,19 +57,11 @@ export class WebsocketGateway
 
   @SubscribeMessage(MessageType.HiddenUpdate)
   handleHiddenUpdate(@ConnectedSocket() client: WebSocket): void {
-    const roomId = this.broadcastService.getClientUserBoundIds(client).roomId;
-    this.broadcastService.broadcastMessage(client, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.toggleHidden(roomId),
-    });
+    this.pokerService.handleHiddenUpdate(client);
   }
 
   @SubscribeMessage(MessageType.ResetVotes)
   handleResetVotes(@ConnectedSocket() client: WebSocket): void {
-    const roomId = this.broadcastService.getClientUserBoundIds(client).roomId;
-    this.broadcastService.broadcastMessage(client, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.resetVotes(roomId),
-    });
+    this.pokerService.handleResetVotes(client);
   }
 }
