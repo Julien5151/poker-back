@@ -18,7 +18,29 @@ export class RoomService extends CrudService<Room> {
     return room;
   }
 
-  public getUserIds(id: RoomId): Array<UserId> {
-    return this.entities.get(id).userIds;
+  public getUserIds(roomId: RoomId): Array<UserId> {
+    return this.entities.get(roomId).userIds;
+  }
+
+  public getRoomFromUserId(userId: UserId): Room | undefined {
+    return [...this.entities.entries()].find(([, room]) =>
+      room.userIds.includes(userId),
+    )?.[1];
+  }
+
+  /**
+   * Remove user from room and returns the updated room if there are still some active users
+   * or delete room and returns null if room is empty after last user has left
+   */
+  public removeUserFromRoom(userId: UserId): Room | null {
+    const room = this.getRoomFromUserId(userId);
+    const updatedUserIds = room.userIds.filter((usId) => usId !== userId);
+    if (updatedUserIds.length === 0) {
+      this.delete(room.id);
+      return null;
+    }
+    return this.update(room.id, {
+      userIds: updatedUserIds,
+    });
   }
 }

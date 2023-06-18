@@ -6,15 +6,10 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { v4 as uuidv4 } from 'uuid';
 import { WebSocket } from 'ws';
-import { BroadcastService } from './services/broadcast.service';
-import { RoomService } from './services/room.service';
-import {
-  MessageType,
-  UserEffect,
-  VoteValue,
-} from './shared/enums/vote-value.enum';
+import { PokerService } from './services/poker.service';
+import { MessageType } from './shared/enums/message-type.enum';
+import { VoteValue } from './shared/enums/vote-value.enum';
 
 @WebSocketGateway({
   path: '/web_socket',
@@ -22,38 +17,14 @@ import {
 export class WebsocketGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-  // TEMP - only while no multiroom in frontend
-  private readonly roomId = uuidv4() as string;
-
-  constructor(
-    private readonly roomService: RoomService,
-    private readonly broadcastService: BroadcastService,
-  ) {
-    // TEMP - only while no multiroom in frontend
-    this.roomService.createRoom(this.roomId);
-  }
+  constructor(private readonly pokerService: PokerService) {}
 
   async handleConnection(clientWs: WebSocket): Promise<void> {
-    const newUserId = uuidv4() as string;
-    const newUserName = `Philippe_${Math.floor(Math.random() * 100000)}`;
-    this.broadcastService.addConnectedClient(clientWs, {
-      userId: newUserId,
-      roomId: this.roomId,
-    });
-    this.broadcastService.broadcastMessage(clientWs, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.addUser(this.roomId, newUserId, newUserName),
-    });
+    this.pokerService.connectNewUser(clientWs);
   }
 
   async handleDisconnect(clientWs: WebSocket): Promise<void> {
-    const disconnectedUserId =
-      this.broadcastService.getClientUserBoundIds(clientWs).userId;
-    this.broadcastService.removeConnectedClient(clientWs);
-    this.broadcastService.broadcastMessage(clientWs, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.removeUser(this.roomId, disconnectedUserId),
-    });
+    this.pokerService.disconnectUser(clientWs);
   }
 
   @SubscribeMessage(MessageType.UserVoteUpdate)

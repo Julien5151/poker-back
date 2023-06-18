@@ -24,8 +24,14 @@ export class BroadcastService {
     this.connectedClients.delete(userId);
   }
 
-  public getClientWs(userId: UserId): WebSocket | undefined {
+  public getWsFromUserId(userId: UserId): WebSocket | undefined {
     return this.connectedClients.get(userId);
+  }
+
+  public getUserIdFromWs(websocket: WebSocket): UserId | undefined {
+    return [...this.connectedClients.entries()].find(
+      ([, ws]) => ws === websocket,
+    )?.[0];
   }
 
   public broadcastToRoom(
