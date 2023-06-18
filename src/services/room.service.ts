@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Room, RoomId } from 'src/shared/interfaces/room.interface';
-import { UserId } from 'src/shared/interfaces/user.interface';
+import { User, UserId } from 'src/shared/interfaces/user.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { CrudService } from './crud.service';
 
@@ -42,5 +42,10 @@ export class RoomService extends CrudService<Room> {
     return this.update(room.id, {
       userIds: updatedUserIds,
     });
+  }
+
+  public updateUser(user: User): Room {
+    const room = this.getRoomFromUserId(user.id);
+    const userToUpdate = room;
   }
 }

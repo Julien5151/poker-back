@@ -1,7 +1,7 @@
 import { MessageType } from '../enums/message-type.enum';
 import { UserEffect } from '../enums/user-effect.enum';
 import { VoteValue } from '../enums/vote-value.enum';
-import { Room } from './room.interface';
+import { RoomUpdate } from './room-update.interface';
 
 export type WebSocketMessage =
   | RoomMessage
@@ -14,7 +14,7 @@ export type WebSocketMessage =
 
 export interface RoomMessage {
   event: MessageType.RoomUpdate;
-  data: Room;
+  data: RoomUpdate;
 }
 
 export interface UserVoteMessage {

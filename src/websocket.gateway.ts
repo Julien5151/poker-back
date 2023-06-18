@@ -32,12 +32,7 @@ export class WebsocketGateway
     @MessageBody() vote: VoteValue,
     @ConnectedSocket() client: WebSocket,
   ): void {
-    const updatedUserId =
-      this.broadcastService.getClientUserBoundIds(client).userId;
-    this.broadcastService.broadcastMessage(client, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.updateUserVote(this.roomId, updatedUserId, vote),
-    });
+    this.pokerService.handleUserVoteUpdate(vote, client);
   }
 
   @SubscribeMessage(MessageType.UserNameUpdate)

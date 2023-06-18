@@ -1,11 +1,11 @@
 import { UserId } from './user.interface';
 
+export type RoomId = string;
+
 export interface Room {
-  id: string;
+  id: RoomId;
   name: string;
   userIds: UserId[];
   isHidden: boolean;
   intervalId: NodeJS.Timer | null;
 }
-
-export type RoomId = string;

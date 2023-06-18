@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MessageType } from 'src/shared/enums/message-type.enum';
+import { VoteValue } from 'src/shared/enums/vote-value.enum';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
 import { RoomService } from './room.service';
@@ -31,5 +32,15 @@ export class PokerService {
         data: updatedRoom,
       });
     }
+  }
+
+  public handleUserVoteUpdate(vote: VoteValue, websocket: WebSocket): void {
+    const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
+    const updatedUserRoomId = this.roomService.getRoomFromUserId(updatedUserId);
+    const updatedUser = this.userService.setUserVote(updatedUserId, vote);
+    this.broadcastService.broadcastToRoom(updatedUserRoomId.id, {
+      event: MessageType.RoomUpdate,
+      data: this.roomService.updateUserVote(this.roomId, updatedUserId, vote),
+    });
   }
 }
