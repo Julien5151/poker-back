@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
+import { UserId } from 'src/shared/interfaces/user.interface';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
 import { RoomService } from './room.service';
@@ -33,8 +35,26 @@ export class PokerService {
   public handleUserVoteUpdate(vote: VoteValue, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
     this.userService.setUserVote(updatedUserId, vote);
-    const updatedUserRoomId =
-      this.roomService.getRoomFromUserId(updatedUserId)?.id;
+    this.broadCastToRoomOfUser(updatedUserId);
+  }
+
+  public handleUserNameUpdate(name: string, websocket: WebSocket): void {
+    const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
+    this.userService.update(updatedUserId, { name });
+    this.broadCastToRoomOfUser(updatedUserId);
+  }
+
+  public handleUserEffectUpdate(
+    effect: UserEffect | null,
+    websocket: WebSocket,
+  ): void {
+    const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
+    this.userService.update(updatedUserId, { effect });
+    this.broadCastToRoomOfUser(updatedUserId);
+  }
+
+  private broadCastToRoomOfUser(userId: UserId): void {
+    const updatedUserRoomId = this.roomService.getRoomFromUserId(userId)?.id;
     if (updatedUserRoomId) {
       this.broadcastService.broadcastRoomUpdate(updatedUserRoomId);
     }

@@ -9,6 +9,7 @@ import {
 import { WebSocket } from 'ws';
 import { PokerService } from './services/poker.service';
 import { MessageType } from './shared/enums/message-type.enum';
+import { UserEffect } from './shared/enums/user-effect.enum';
 import { VoteValue } from './shared/enums/vote-value.enum';
 
 @WebSocketGateway({
@@ -40,12 +41,7 @@ export class WebsocketGateway
     @MessageBody() name: string,
     @ConnectedSocket() client: WebSocket,
   ): void {
-    const updatedUserId =
-      this.broadcastService.getClientUserBoundIds(client).userId;
-    this.broadcastService.broadcastMessage(client, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.updateUserName(this.roomId, updatedUserId, name),
-    });
+    this.pokerService.handleUserNameUpdate(name, client);
   }
 
   @SubscribeMessage(MessageType.UserEffectUpdate)
@@ -53,25 +49,9 @@ export class WebsocketGateway
     @MessageBody() effect: UserEffect,
     @ConnectedSocket() client: WebSocket,
   ): void {
-    const updatedUserId =
-      this.broadcastService.getClientUserBoundIds(client).userId;
-    this.broadcastService.broadcastMessage(client, {
-      event: MessageType.RoomUpdate,
-      data: this.roomService.updateUserEffect(
-        this.roomId,
-        updatedUserId,
-        effect,
-      ),
-    });
+    this.pokerService.handleUserEffectUpdate(effect, client);
     setTimeout(() => {
-      this.broadcastService.broadcastMessage(client, {
-        event: MessageType.RoomUpdate,
-        data: this.roomService.updateUserEffect(
-          this.roomId,
-          updatedUserId,
-          null,
-        ),
-      });
+      this.pokerService.handleUserEffectUpdate(null, client);
     }, 1500);
   }
 
