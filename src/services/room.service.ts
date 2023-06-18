@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Room, RoomId } from 'src/shared/interfaces/room.interface';
-import { User, UserId } from 'src/shared/interfaces/user.interface';
+import { UserId } from 'src/shared/interfaces/user.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { CrudService } from './crud.service';
 
@@ -18,7 +18,7 @@ export class RoomService extends CrudService<Room> {
     return room;
   }
 
-  public getUserIds(roomId: RoomId): Array<UserId> {
+  public getUserIds(roomId: RoomId): UserId[] {
     return this.entities.get(roomId).userIds;
   }
 
@@ -32,7 +32,7 @@ export class RoomService extends CrudService<Room> {
    * Remove user from room and returns the updated room if there are still some active users
    * or delete room and returns null if room is empty after last user has left
    */
-  public removeUserFromRoom(userId: UserId): Room | null {
+  public removeUser(userId: UserId): Room | null {
     const room = this.getRoomFromUserId(userId);
     const updatedUserIds = room.userIds.filter((usId) => usId !== userId);
     if (updatedUserIds.length === 0) {
@@ -44,8 +44,9 @@ export class RoomService extends CrudService<Room> {
     });
   }
 
-  public updateUser(user: User): Room {
-    const room = this.getRoomFromUserId(user.id);
-    const userToUpdate = room;
+  public addUser(userId: UserId, roomId: RoomId): Room {
+    const room = this.get(roomId);
+    room.userIds.push(userId);
+    return room;
   }
 }

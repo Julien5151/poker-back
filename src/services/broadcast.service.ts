@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MessageType } from 'src/shared/enums/message-type.enum';
+import { RoomUpdate } from 'src/shared/interfaces/room-update.interface';
 import { RoomId } from 'src/shared/interfaces/room.interface';
 import { UserId } from 'src/shared/interfaces/user.interface';
 import {
@@ -8,13 +9,17 @@ import {
 } from 'src/shared/interfaces/ws-message.interface';
 import { WebSocket } from 'ws';
 import { RoomService } from './room.service';
+import { UserService } from './user.service';
 
 @Injectable()
 export class BroadcastService {
   private connectedClients = new Map<UserId, WebSocket>();
   private readonly PING_INTERVAL = 30000;
 
-  constructor(private readonly roomService: RoomService) {}
+  constructor(
+    private readonly roomService: RoomService,
+    private readonly userService: UserService,
+  ) {}
 
   public addConnectedClient(userId: UserId, clientWs: WebSocket): void {
     this.connectedClients.set(userId, clientWs);
@@ -34,7 +39,7 @@ export class BroadcastService {
     )?.[0];
   }
 
-  public broadcastToRoom(
+  private broadcastToRoom(
     id: RoomId,
     wsMessage: RoomMessage | PingMessage,
   ): void {
@@ -48,13 +53,31 @@ export class BroadcastService {
         ws.send(stringifiedMessage);
       });
       // Reset ping interval after each message sent
-      this.resetPing(id);
+      this.broadcastRoomResetPing(id);
     } catch (error) {
       console.error('Failed to stringify websocket message before sending it');
     }
   }
 
-  private resetPing(roomId: RoomId): void {
+  public broadcastRoomUpdate(roomId: RoomId): void {
+    const room = this.roomService.get(roomId);
+    const { id, name, isHidden } = room;
+    const roomUsers = room.userIds.map((userId) =>
+      this.userService.get(userId),
+    );
+    const roomUpdateMessage: RoomUpdate = {
+      id,
+      name,
+      users: roomUsers,
+      isHidden,
+    };
+    this.broadcastToRoom(id, {
+      event: MessageType.RoomUpdate,
+      data: roomUpdateMessage,
+    });
+  }
+
+  private broadcastRoomResetPing(roomId: RoomId): void {
     const room = this.roomService.get(roomId);
     if (room.intervalId) globalThis.clearInterval(room.intervalId);
     room.intervalId = globalThis.setInterval(() => {
