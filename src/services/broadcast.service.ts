@@ -14,7 +14,6 @@ import { UserService } from './user.service';
 @Injectable()
 export class BroadcastService {
   private connectedClients = new Map<UserId, WebSocket>();
-  private readonly PING_INTERVAL = 30000;
 
   constructor(
     private readonly roomService: RoomService,
@@ -52,8 +51,6 @@ export class BroadcastService {
       clientWebSockets.forEach((ws) => {
         ws.send(stringifiedMessage);
       });
-      // Reset ping interval after each message sent
-      this.broadcastRoomResetPing(name);
     } catch (error) {
       console.error('Failed to stringify websocket message before sending it');
     }
@@ -77,11 +74,12 @@ export class BroadcastService {
     });
   }
 
-  private broadcastRoomResetPing(roomName: RoomName): void {
-    const room = this.roomService.get(roomName);
-    if (room.intervalId) globalThis.clearInterval(room.intervalId);
-    room.intervalId = globalThis.setInterval(() => {
-      this.broadcastToRoom(roomName, { event: MessageType.Ping });
-    }, this.PING_INTERVAL);
-  }
+  // TO DO : A REFACTOR DANS UN SERVICE A PART
+  //   private broadcastRoomResetPing(roomName: RoomName): void {
+  //     const room = this.roomService.get(roomName);
+  //     if (room.intervalId) globalThis.clearInterval(room.intervalId);
+  //     room.intervalId = globalThis.setInterval(() => {
+  //       this.broadcastToRoom(roomName, { event: MessageType.Ping });
+  //     }, this.PING_INTERVAL);
+  //   }
 }
