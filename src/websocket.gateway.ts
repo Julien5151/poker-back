@@ -58,9 +58,12 @@ export class WebsocketGateway
     @ConnectedSocket() client: WebSocket,
   ): void {
     this.pokerService.handleUserEffectUpdate(effect, client);
-    setTimeout(() => {
-      this.pokerService.handleUserEffectUpdate(null, client);
-    }, 1500);
+    setTimeout(
+      () => {
+        this.pokerService.handleUserEffectUpdate(null, client);
+      },
+      effect === UserEffect.Philippe ? 1500 : 3100,
+    );
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)
