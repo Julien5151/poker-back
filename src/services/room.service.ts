@@ -38,4 +38,10 @@ export class RoomService extends CrudService<Room> {
     room.userIds.push(userId);
     return room;
   }
+
+  public deleteRoomAndClearInterval(roomName: RoomName): boolean {
+    const room = this.get(roomName);
+    if (room.intervalId) globalThis.clearInterval(room.intervalId);
+    return this.delete(roomName);
+  }
 }

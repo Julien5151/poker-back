@@ -29,7 +29,7 @@ export class PokerService {
     this.userService.delete(disconnectedUserId);
     this.broadcastService.removeConnectedClient(disconnectedUserId);
     if (updatedRoom.userIds.length === 0) {
-      this.roomService.delete(updatedRoom.name);
+      this.roomService.deleteRoomAndClearInterval(updatedRoom.name);
     } else {
       this.broadcastService.broadcastRoomUpdate(updatedRoom.name);
     }
@@ -43,7 +43,7 @@ export class PokerService {
     if (currentRoom) {
       this.roomService.removeUser(userId);
       if (currentRoom.userIds.length === 0) {
-        this.roomService.delete(currentRoom.name);
+        this.roomService.deleteRoomAndClearInterval(currentRoom.name);
       } else {
         this.broadcastService.broadcastRoomUpdate(currentRoom.name);
       }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Room } from 'src/interfaces/room.interface';
 import { MessageType } from 'src/shared/enums/message-type.enum';
 import { RoomState } from 'src/shared/interfaces/room-state.interface';
 import {
@@ -14,6 +15,7 @@ import { UserService } from './user.service';
 @Injectable()
 export class BroadcastService {
   private connectedClients = new Map<UserId, WebSocket>();
+  private readonly PING_INTERVAL = 30000;
 
   constructor(
     private readonly roomService: RoomService,
@@ -72,17 +74,16 @@ export class BroadcastService {
         event: MessageType.RoomUpdate,
         data: roomStateMessage,
       });
+      this.resetRoomPingBroadcast(room);
     } else {
       console.error('Room not found');
     }
   }
 
-  // TO DO : A REFACTOR DANS UN SERVICE A PART
-  //   private broadcastRoomResetPing(roomName: RoomName): void {
-  //     const room = this.roomService.get(roomName);
-  //     if (room.intervalId) globalThis.clearInterval(room.intervalId);
-  //     room.intervalId = globalThis.setInterval(() => {
-  //       this.broadcastToRoom(roomName, { event: MessageType.Ping });
-  //     }, this.PING_INTERVAL);
-  //   }
+  private resetRoomPingBroadcast(room: Room): void {
+    if (room.intervalId) globalThis.clearInterval(room.intervalId);
+    room.intervalId = globalThis.setInterval(() => {
+      this.broadcastToRoom(room.name, { event: MessageType.Ping });
+    }, this.PING_INTERVAL);
+  }
 }
