@@ -13,8 +13,7 @@ export class RoomService extends CrudService<Room> {
       isHidden: true,
       intervalId: null,
     };
-    super.set(room);
-    return room;
+    return super.set(room);
   }
 
   public getUserIds(roomName: RoomName): UserId[] {
@@ -27,19 +26,10 @@ export class RoomService extends CrudService<Room> {
     )?.[1];
   }
 
-  /**
-   * Remove user from room and returns the updated room if there are still some active users
-   * or delete room and returns null if room is empty after last user has left
-   */
-  public removeUser(userId: UserId): Room | null {
+  public removeUser(userId: UserId): Room {
     const room = this.getRoomFromUserId(userId);
-    const updatedUserIds = room.userIds.filter((usId) => usId !== userId);
-    if (updatedUserIds.length === 0) {
-      this.delete(room.name);
-      return null;
-    }
     return this.update(room.name, {
-      userIds: updatedUserIds,
+      userIds: room.userIds.filter((usId) => usId !== userId),
     });
   }
 

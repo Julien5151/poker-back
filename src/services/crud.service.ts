@@ -8,9 +8,10 @@ export abstract class CrudService<
 
   public abstract new(...args: any[]): T;
 
-  protected set(entity: T): void {
+  protected set(entity: T): T {
     const identifier = entity.id ?? entity.name;
     this.entities.set(identifier, entity);
+    return entity;
   }
 
   public get(id: EntityId): T | undefined {

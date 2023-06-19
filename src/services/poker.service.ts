@@ -28,7 +28,9 @@ export class PokerService {
     const updatedRoom = this.roomService.removeUser(disconnectedUserId);
     this.userService.delete(disconnectedUserId);
     this.broadcastService.removeConnectedClient(disconnectedUserId);
-    if (updatedRoom) {
+    if (updatedRoom.userIds.length === 0) {
+      this.roomService.delete(updatedRoom.name);
+    } else {
       this.broadcastService.broadcastRoomUpdate(updatedRoom.name);
     }
   }
@@ -40,7 +42,11 @@ export class PokerService {
     const currentRoom = this.roomService.getRoomFromUserId(userId);
     if (currentRoom) {
       this.roomService.removeUser(userId);
-      this.broadcastService.broadcastRoomUpdate(currentRoom.name);
+      if (currentRoom.userIds.length === 0) {
+        this.roomService.delete(currentRoom.name);
+      } else {
+        this.broadcastService.broadcastRoomUpdate(currentRoom.name);
+      }
     }
     const targetRoom = this.roomService.get(roomName);
     if (targetRoom) {
@@ -54,7 +60,7 @@ export class PokerService {
 
   public handleUserVoteUpdate(vote: VoteValue, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
-    this.userService.setUserVote(updatedUserId, vote);
+    this.userService.updateUserVote(updatedUserId, vote);
     this.broadCastToRoomOfUser(updatedUserId);
   }
 

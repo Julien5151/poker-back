@@ -15,16 +15,15 @@ export class UserService extends CrudService<User> {
       vote: null,
       effect: null,
     };
-    super.set(user);
-    return user;
+    return super.set(user);
   }
 
-  public setUserVote(userId: UserId, voteValue: VoteValue): User {
-    const user = this.get(userId);
-    user.vote = {
-      value: voteValue,
-      weight: VOTE_VALUE_WEIGHT_MAP[voteValue],
-    };
-    return user;
+  public updateUserVote(userId: UserId, voteValue: VoteValue): User {
+    return this.update(userId, {
+      vote: {
+        value: voteValue,
+        weight: VOTE_VALUE_WEIGHT_MAP[voteValue],
+      },
+    });
   }
 }

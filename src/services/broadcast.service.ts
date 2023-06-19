@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { MessageType } from 'src/shared/enums/message-type.enum';
 import { RoomState } from 'src/shared/interfaces/room-state.interface';
 import {
@@ -58,20 +58,23 @@ export class BroadcastService {
 
   public broadcastRoomUpdate(roomName: RoomName): void {
     const room = this.roomService.get(roomName);
-    if (!room) throw new NotFoundException('Room not found');
-    const { name, isHidden } = room;
-    const roomUsers = room.userIds.map((userId) =>
-      this.userService.get(userId),
-    );
-    const roomStateMessage: RoomState = {
-      name,
-      users: roomUsers,
-      isHidden,
-    };
-    this.broadcastToRoom(name, {
-      event: MessageType.RoomUpdate,
-      data: roomStateMessage,
-    });
+    if (room) {
+      const { name, isHidden } = room;
+      const roomUsers = room.userIds.map((userId) =>
+        this.userService.get(userId),
+      );
+      const roomStateMessage: RoomState = {
+        name,
+        users: roomUsers,
+        isHidden,
+      };
+      this.broadcastToRoom(name, {
+        event: MessageType.RoomUpdate,
+        data: roomStateMessage,
+      });
+    } else {
+      console.error('Room not found');
+    }
   }
 
   // TO DO : A REFACTOR DANS UN SERVICE A PART
