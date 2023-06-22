@@ -1,5 +1,5 @@
-import { UserId } from 'src/shared/types/user-id.type';
 import { UserEffect } from '../enums/user-effect.enum';
+import { UserId } from '../types/user-id.type';
 import { Vote } from './vote.interface';
 
 export interface User {

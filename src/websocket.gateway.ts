@@ -11,6 +11,7 @@ import { PokerService } from './services/poker.service';
 import { MessageType } from './shared/enums/message-type.enum';
 import { UserEffect } from './shared/enums/user-effect.enum';
 import { VoteValue } from './shared/enums/vote-value.enum';
+import { USER_EFFECTS_MAP } from './shared/maps/effects.map';
 
 @WebSocketGateway({
   path: '/web_socket',
@@ -58,12 +59,9 @@ export class WebsocketGateway
     @ConnectedSocket() client: WebSocket,
   ): void {
     this.pokerService.handleUserEffectUpdate(effect, client);
-    setTimeout(
-      () => {
-        this.pokerService.handleUserEffectUpdate(null, client);
-      },
-      effect === UserEffect.Philippe ? 1500 : 3100,
-    );
+    setTimeout(() => {
+      this.pokerService.handleUserEffectUpdate(null, client);
+    }, USER_EFFECTS_MAP[effect].duration);
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)
