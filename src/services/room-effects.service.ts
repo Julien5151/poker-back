@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Room } from 'src/internals/interfaces/room.interface';
 import { ROOM_EFFECT_COOLDOWNS_MAP } from 'src/internals/maps/room-effect-cooldowns.map';
-import { Duration, ROOM_EFFECT_DURATIONS_MAP } from 'src/internals/maps/room-effect-durations.map';
 import { RoomEffect } from 'src/shared/enums/room-effect.enum';
+import { Duration, ROOM_EFFECT_DURATIONS_MAP } from 'src/shared/maps/room-effect-durations.map';
 import { BroadcastService } from './broadcast.service';
 import { RoomService } from './room.service';
 import { UserService } from './user.service';

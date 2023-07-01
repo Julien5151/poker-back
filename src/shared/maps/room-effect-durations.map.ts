@@ -1,4 +1,4 @@
-import { RoomEffect } from '../../shared/enums/room-effect.enum';
+import { RoomEffect } from '../enums/room-effect.enum';
 
 export type Duration = number;
 
