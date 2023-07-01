@@ -8,6 +8,7 @@ export interface Room {
   name: RoomName;
   userIds: UserId[];
   isHidden: boolean;
+  roomEffect: RoomEffect | null;
   roomEffectCoolDowns: Record<RoomEffect, CoolDownTimestamp>;
   intervalId: NodeJS.Timer | null;
 }

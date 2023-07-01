@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Room } from 'src/interfaces/room.interface';
+import { Room } from 'src/internals/interfaces/room.interface';
+import { RoomEffect } from 'src/shared/enums/room-effect.enum';
 import { RoomName } from 'src/shared/types/room-name.type';
 import { UserId } from 'src/shared/types/user-id.type';
 import { CrudService } from './crud.service';
@@ -11,6 +12,11 @@ export class RoomService extends CrudService<Room> {
       name,
       userIds: [],
       isHidden: true,
+      roomEffect: null,
+      roomEffectCoolDowns: {
+        [RoomEffect.Fanfare]: 0,
+        [RoomEffect.Explosion]: 0,
+      },
       intervalId: null,
     };
     return super.set(room);

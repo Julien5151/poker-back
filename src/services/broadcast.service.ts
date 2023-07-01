@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Room } from 'src/interfaces/room.interface';
+import { Room } from 'src/internals/interfaces/room.interface';
 import { MessageType } from 'src/shared/enums/message-type.enum';
 import { RoomState } from 'src/shared/interfaces/room-state.interface';
 import { PingMessage, RoomMessage } from 'src/shared/interfaces/ws-message.interface';
@@ -48,12 +48,13 @@ export class BroadcastService {
   public broadcastRoomUpdate(roomName: RoomName): void {
     const room = this.roomService.get(roomName);
     if (room) {
-      const { name, isHidden } = room;
+      const { name, isHidden, roomEffect } = room;
       const roomUsers = room.userIds.map((userId) => this.userService.get(userId));
       const roomStateMessage: RoomState = {
         name,
         users: roomUsers,
         isHidden,
+        roomEffect,
       };
       this.broadcastToRoom(name, {
         event: MessageType.RoomUpdate,

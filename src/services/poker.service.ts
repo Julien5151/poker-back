@@ -5,6 +5,7 @@ import { ROOM_NAME_REGEX } from 'src/shared/regex/room-name.regex';
 import { UserId } from 'src/shared/types/user-id.type';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
+import { RoomEffectsService } from './room-effects.service';
 import { RoomService } from './room.service';
 import { UserService } from './user.service';
 
@@ -14,6 +15,7 @@ export class PokerService {
     private readonly userService: UserService,
     private readonly roomService: RoomService,
     private readonly broadcastService: BroadcastService,
+    private readonly roomEffectsService: RoomEffectsService,
   ) {}
 
   public handleNewUserConnection(websocket: WebSocket): void {
@@ -77,6 +79,9 @@ export class PokerService {
     const userInitiatingActionId = this.broadcastService.getUserIdFromWs(websocket);
     const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
     if (room) {
+      if (room.isHidden) {
+        this.roomEffectsService.updateRoomWithFanfare(room);
+      }
       this.roomService.update(room.name, { isHidden: !room.isHidden });
       this.broadCastToRoomOfUser(userInitiatingActionId);
     }
