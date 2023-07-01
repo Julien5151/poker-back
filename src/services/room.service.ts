@@ -21,9 +21,7 @@ export class RoomService extends CrudService<Room> {
   }
 
   public getRoomFromUserId(userId: UserId): Room | undefined {
-    return [...this.entities.entries()].find(([, room]) =>
-      room.userIds.includes(userId),
-    )?.[1];
+    return [...this.entities.entries()].find(([, room]) => room.userIds.includes(userId))?.[1];
   }
 
   public removeUser(userId: UserId): Room {

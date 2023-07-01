@@ -17,9 +17,7 @@ export class PokerService {
   ) {}
 
   public handleNewUserConnection(websocket: WebSocket): void {
-    const newUser = this.userService.new(
-      `Philippe_${Math.floor(Math.random() * 100000)}`,
-    );
+    const newUser = this.userService.new(`Philippe_${Math.floor(Math.random() * 100000)}`);
     this.broadcastService.addConnectedClient(newUser.id, websocket);
   }
 
@@ -36,8 +34,7 @@ export class PokerService {
   }
 
   public handleUserJoinRoom(roomName: string, websocket: WebSocket): void {
-    if (!roomName.match(ROOM_NAME_REGEX))
-      throw new BadRequestException('Invalid room name');
+    if (!roomName.match(ROOM_NAME_REGEX)) throw new BadRequestException('Invalid room name');
     const userId = this.broadcastService.getUserIdFromWs(websocket);
     const currentRoom = this.roomService.getRoomFromUserId(userId);
     if (currentRoom) {
@@ -70,18 +67,14 @@ export class PokerService {
     this.broadCastToRoomOfUser(updatedUserId);
   }
 
-  public handleUserEffectUpdate(
-    effect: UserEffect | null,
-    websocket: WebSocket,
-  ): void {
+  public handleUserEffectUpdate(effect: UserEffect | null, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
     this.userService.update(updatedUserId, { effect });
     this.broadCastToRoomOfUser(updatedUserId);
   }
 
   public handleHiddenUpdate(websocket: WebSocket): void {
-    const userInitiatingActionId =
-      this.broadcastService.getUserIdFromWs(websocket);
+    const userInitiatingActionId = this.broadcastService.getUserIdFromWs(websocket);
     const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
     if (room) {
       this.roomService.update(room.name, { isHidden: !room.isHidden });
@@ -90,14 +83,11 @@ export class PokerService {
   }
 
   public handleResetVotes(websocket: WebSocket): void {
-    const userInitiatingActionId =
-      this.broadcastService.getUserIdFromWs(websocket);
+    const userInitiatingActionId = this.broadcastService.getUserIdFromWs(websocket);
     const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
     if (room) {
       const { userIds } = room;
-      userIds.forEach((userId) =>
-        this.userService.update(userId, { vote: null }),
-      );
+      userIds.forEach((userId) => this.userService.update(userId, { vote: null }));
       this.broadCastToRoomOfUser(userInitiatingActionId);
     }
   }

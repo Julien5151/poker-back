@@ -1,11 +1,4 @@
-import {
-  ConnectedSocket,
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
-  WebSocketGateway,
-} from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { WebSocket } from 'ws';
 import { PokerService } from './services/poker.service';
 import { MessageType } from './shared/enums/message-type.enum';
@@ -16,9 +9,7 @@ import { USER_EFFECTS_MAP } from './shared/maps/effects.map';
 @WebSocketGateway({
   path: '/web_socket',
 })
-export class WebsocketGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly pokerService: PokerService) {}
 
   async handleConnection(clientWs: WebSocket): Promise<void> {
@@ -30,34 +21,22 @@ export class WebsocketGateway
   }
 
   @SubscribeMessage(MessageType.UserJoinRoom)
-  handleUserJoinRoom(
-    @MessageBody() roomName: string,
-    @ConnectedSocket() client: WebSocket,
-  ): void {
+  handleUserJoinRoom(@MessageBody() roomName: string, @ConnectedSocket() client: WebSocket): void {
     this.pokerService.handleUserJoinRoom(roomName, client);
   }
 
   @SubscribeMessage(MessageType.UserVoteUpdate)
-  handleUserVoteUpdate(
-    @MessageBody() vote: VoteValue,
-    @ConnectedSocket() client: WebSocket,
-  ): void {
+  handleUserVoteUpdate(@MessageBody() vote: VoteValue, @ConnectedSocket() client: WebSocket): void {
     this.pokerService.handleUserVoteUpdate(vote, client);
   }
 
   @SubscribeMessage(MessageType.UserNameUpdate)
-  handleUserNameUpdate(
-    @MessageBody() name: string,
-    @ConnectedSocket() client: WebSocket,
-  ): void {
+  handleUserNameUpdate(@MessageBody() name: string, @ConnectedSocket() client: WebSocket): void {
     this.pokerService.handleUserNameUpdate(name, client);
   }
 
   @SubscribeMessage(MessageType.UserEffectUpdate)
-  handleUserEffectUpdate(
-    @MessageBody() effect: UserEffect,
-    @ConnectedSocket() client: WebSocket,
-  ): void {
+  handleUserEffectUpdate(@MessageBody() effect: UserEffect, @ConnectedSocket() client: WebSocket): void {
     this.pokerService.handleUserEffectUpdate(effect, client);
     setTimeout(() => {
       this.pokerService.handleUserEffectUpdate(null, client);
