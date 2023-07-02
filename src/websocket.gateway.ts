@@ -1,7 +1,9 @@
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { WebSocket } from 'ws';
+import { USER_ACTION_DURATIONS_MAP } from './internals/maps/user-action-durations.map';
 import { PokerService } from './services/poker.service';
 import { MessageType } from './shared/enums/message-type.enum';
+import { UserAction } from './shared/enums/user-action.enum';
 import { UserEffect } from './shared/enums/user-effect.enum';
 import { VoteValue } from './shared/enums/vote-value.enum';
 import { USER_EFFECTS_MAP } from './shared/maps/effects.map';
@@ -41,6 +43,14 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     setTimeout(() => {
       this.pokerService.handleUserEffectUpdate(null, client);
     }, USER_EFFECTS_MAP[effect].duration);
+  }
+
+  @SubscribeMessage(MessageType.UserActionUpdate)
+  handleUserActionUpdate(@MessageBody() action: UserAction, @ConnectedSocket() client: WebSocket): void {
+    this.pokerService.handleUserActionUpdate(action, client);
+    setTimeout(() => {
+      this.pokerService.handleUserActionUpdate(null, client);
+    }, USER_ACTION_DURATIONS_MAP[action]);
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)

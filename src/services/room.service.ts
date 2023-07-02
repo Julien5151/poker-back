@@ -15,6 +15,7 @@ export class RoomService extends CrudService<Room> {
       roomEffect: null,
       roomEffectCoolDowns: {
         [RoomEffect.Fanfare]: 0,
+        [RoomEffect.Ignition]: 0,
         [RoomEffect.Explosion]: 0,
       },
       intervalId: null,
@@ -23,7 +24,7 @@ export class RoomService extends CrudService<Room> {
   }
 
   public getUserIds(roomName: RoomName): UserId[] {
-    return this.entities.get(roomName).userIds;
+    return this.entities.get(roomName)?.userIds ?? [];
   }
 
   public getRoomFromUserId(userId: UserId): Room | undefined {

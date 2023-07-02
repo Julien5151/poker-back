@@ -18,9 +18,11 @@ export abstract class CrudService<
     return this.entities.get(id);
   }
 
-  public update(id: EntityId, entityUpdate: Partial<T>): T {
+  public update(id: EntityId, entityUpdate: Partial<T>): T | undefined {
+    const entity = this.get(id);
+    if (!entity) return undefined;
     const updatedEntity: T = {
-      ...this.get(id),
+      ...entity,
       ...entityUpdate,
     };
     this.entities.set(id, updatedEntity);

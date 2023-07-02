@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { MessageType } from 'src/shared/enums/message-type.enum';
+import { UserAction } from 'src/shared/enums/user-action.enum';
 import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
+import { UserSuccessfullyConnectedMessage } from 'src/shared/interfaces/ws-message.interface';
 import { ROOM_NAME_REGEX } from 'src/shared/regex/room-name.regex';
 import { UserId } from 'src/shared/types/user-id.type';
 import { WebSocket } from 'ws';
@@ -55,12 +58,29 @@ export class PokerService {
       this.roomService.addUser(userId, roomName);
     }
     this.broadCastToRoomOfUser(userId);
+    const userConnectedMessage: UserSuccessfullyConnectedMessage = {
+      event: MessageType.UserSuccessfullyConnected,
+      data: userId,
+    };
+    this.broadcastService.broadcastToUser(userId, userConnectedMessage);
   }
 
   public handleUserVoteUpdate(vote: VoteValue, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
     this.userService.updateUserVote(updatedUserId, vote);
     this.broadCastToRoomOfUser(updatedUserId);
+  }
+
+  public handleUserActionUpdate(action: UserAction, websocket: WebSocket): void {
+    const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
+    if (updatedUserId) {
+      this.userService.update(updatedUserId, { action });
+      const room = this.roomService.getRoomFromUserId(updatedUserId);
+      if (room) {
+        this.roomEffectsService.checkIgnition(room.name);
+        this.broadCastToRoomOfUser(updatedUserId);
+      }
+    }
   }
 
   public handleUserNameUpdate(name: string, websocket: WebSocket): void {
@@ -71,8 +91,10 @@ export class PokerService {
 
   public handleUserEffectUpdate(effect: UserEffect | null, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
-    this.userService.update(updatedUserId, { effect });
-    this.broadCastToRoomOfUser(updatedUserId);
+    if (updatedUserId) {
+      this.userService.update(updatedUserId, { effect });
+      this.broadCastToRoomOfUser(updatedUserId);
+    }
   }
 
   public handleHiddenUpdate(websocket: WebSocket): void {
@@ -80,7 +102,7 @@ export class PokerService {
     const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
     if (room) {
       if (room.isHidden) {
-        this.roomEffectsService.updateRoomWithFanfare(room);
+        this.roomEffectsService.checkFanfare(room.name);
       }
       this.roomService.update(room.name, { isHidden: !room.isHidden });
       this.broadCastToRoomOfUser(userInitiatingActionId);
