@@ -115,6 +115,7 @@ export class PokerService {
     if (room) {
       const { userIds } = room;
       userIds.forEach((userId) => this.userService.update(userId, { vote: null }));
+      this.roomService.update(room.name, { isHidden: true });
       this.broadCastToRoomOfUser(userInitiatingActionId);
     }
   }
