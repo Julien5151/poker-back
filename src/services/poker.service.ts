@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { MessageType } from 'src/shared/enums/message-type.enum';
+import { RoomEffect } from 'src/shared/enums/room-effect.enum';
 import { UserAction } from 'src/shared/enums/user-action.enum';
 import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
@@ -77,8 +78,12 @@ export class PokerService {
       this.userService.update(updatedUserId, { action });
       const room = this.roomService.getRoomFromUserId(updatedUserId);
       if (room) {
-        this.roomEffectsService.checkIgnition(room.name);
-        this.roomEffectsService.checkChenille(room.name);
+        if (!(room.roomEffect === RoomEffect.Chenille) && action === UserAction.NuclearIgnition) {
+          this.roomEffectsService.checkIgnition(room.name);
+        }
+        if (!(room.roomEffect === RoomEffect.Ignition) && action === UserAction.ChenilleIgnition) {
+          this.roomEffectsService.checkChenille(room.name);
+        }
         this.broadCastToRoomOfUser(updatedUserId);
       }
     }
