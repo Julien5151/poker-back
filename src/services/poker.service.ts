@@ -78,6 +78,7 @@ export class PokerService {
       const room = this.roomService.getRoomFromUserId(updatedUserId);
       if (room) {
         this.roomEffectsService.checkIgnition(room.name);
+        this.roomEffectsService.checkChenille(room.name);
         this.broadCastToRoomOfUser(updatedUserId);
       }
     }

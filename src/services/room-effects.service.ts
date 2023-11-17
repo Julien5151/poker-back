@@ -61,6 +61,16 @@ export class RoomEffectsService {
     }
   }
 
+  public checkChenille(roomName: RoomName): void {
+    const room = this.roomService.get(roomName);
+    if (!room) return;
+    const users = room.userIds.map((userId) => this.userService.get(userId));
+    const usersWithChenilleIgnition = users.filter((user) => user.action === UserAction.ChenilleIgnition);
+    if (room.roomEffect !== RoomEffect.Chenille && usersWithChenilleIgnition.length === users.length) {
+      this.updateRoomWithEffect(roomName, RoomEffect.Chenille);
+    }
+  }
+
   private updateRoomWithEffect(roomName: RoomName, roomEffect: RoomEffect): void {
     let room = this.roomService.get(roomName);
     if (!room) return;
