@@ -66,9 +66,6 @@ export class RoomEffectsService {
     if (!room) return;
     const users = room.userIds.map((userId) => this.userService.get(userId));
     const usersWithChenilleIgnition = users.filter((user) => user.action === UserAction.ChenilleIgnition);
-    if (usersWithChenilleIgnition.length > 0) {
-      this.updateRoomWithEffect(roomName, RoomEffect.ChenilleIgnition);
-    }
     if (users.length >= 3 && usersWithChenilleIgnition.length === users.length) {
       this.updateRoomWithEffect(roomName, RoomEffect.Chenille);
     }
