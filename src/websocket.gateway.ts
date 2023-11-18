@@ -48,9 +48,12 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
   @SubscribeMessage(MessageType.UserActionUpdate)
   handleUserActionUpdate(@MessageBody() action: UserAction, @ConnectedSocket() client: WebSocket): void {
     this.pokerService.handleUserActionUpdate(action, client);
-    setTimeout(() => {
-      this.pokerService.handleUserActionUpdate(null, client);
-    }, USER_ACTION_DURATIONS_MAP[action]);
+    const actionDuration = USER_ACTION_DURATIONS_MAP[action];
+    if (actionDuration) {
+      setTimeout(() => {
+        this.pokerService.handleUserActionUpdate(null, client);
+      }, actionDuration);
+    }
   }
 
   @SubscribeMessage(MessageType.HiddenUpdate)

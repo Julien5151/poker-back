@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { MessageType } from 'src/shared/enums/message-type.enum';
+import { RoomEffect } from 'src/shared/enums/room-effect.enum';
 import { UserAction } from 'src/shared/enums/user-action.enum';
 import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
 import { UserSuccessfullyConnectedMessage } from 'src/shared/interfaces/ws-message.interface';
 import { ROOM_NAME_REGEX } from 'src/shared/regex/room-name.regex';
+import { RoomName } from 'src/shared/types/room-name.type';
 import { UserId } from 'src/shared/types/user-id.type';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
@@ -77,8 +79,14 @@ export class PokerService {
       this.userService.update(updatedUserId, { action });
       const room = this.roomService.getRoomFromUserId(updatedUserId);
       if (room) {
-        this.roomEffectsService.checkIgnition(room.name);
-        this.broadCastToRoomOfUser(updatedUserId);
+        if (!(room.roomEffect === RoomEffect.Chenille) && action === UserAction.NuclearIgnition) {
+          this.roomEffectsService.checkIgnition(room.name);
+          this.broadCastToRoomOfUser(updatedUserId);
+        } else if (!(room.roomEffect === RoomEffect.Ignition) && action === UserAction.ChenilleIgnition) {
+          this.roomEffectsService.checkChenille(room.name);
+          this.broadCastToRoomOfUser(updatedUserId);
+        }
+        if (action === null) this.broadCastToRoomOfUser(updatedUserId);
       }
     }
   }
@@ -125,5 +133,12 @@ export class PokerService {
     if (userRoomName) {
       this.broadcastService.broadcastRoomUpdate(userRoomName);
     }
+  }
+
+  private areAllUsersOfRoomAskingChenille(roomName: RoomName): boolean {
+    const room = this.roomService.get(roomName);
+    if (!room) return false;
+    const users = this.roomService.getUserIds(roomName).map((userId) => this.userService.get(userId));
+    return !!(users.length > 0 && users.length === users.filter((user) => user.action === UserAction.ChenilleIgnition).length);
   }
 }

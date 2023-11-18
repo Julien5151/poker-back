@@ -61,6 +61,29 @@ export class RoomEffectsService {
     }
   }
 
+  public checkChenille(roomName: RoomName): void {
+    const room = this.roomService.get(roomName);
+    if (!room) return;
+    const users = room.userIds.map((userId) => this.userService.get(userId));
+    const usersWithChenilleIgnition = users.filter((user) => user.action === UserAction.ChenilleIgnition);
+    if (users.length >= 3 && usersWithChenilleIgnition.length === users.length) {
+      this.updateRoomWithEffect(roomName, RoomEffect.Chenille);
+      setTimeout(() => {
+        this.roomService
+          .getUserIds(roomName)
+          .map((userId) => this.userService.get(userId))
+          .forEach((user) => {
+            if (user.action === UserAction.ChenilleIgnition) {
+              this.userService.update(user.id, {
+                action: null,
+              });
+            }
+          });
+        this.broadcastService.broadcastRoomUpdate(roomName);
+      }, ROOM_EFFECT_DURATIONS_MAP[RoomEffect.Chenille]);
+    }
+  }
+
   private updateRoomWithEffect(roomName: RoomName, roomEffect: RoomEffect): void {
     let room = this.roomService.get(roomName);
     if (!room) return;
