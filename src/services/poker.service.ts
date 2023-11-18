@@ -78,13 +78,14 @@ export class PokerService {
       this.userService.update(updatedUserId, { action });
       const room = this.roomService.getRoomFromUserId(updatedUserId);
       if (room) {
-        if (!(room.roomEffect === RoomEffect.Chenille) && action === UserAction.NuclearIgnition) {
+        if (!(room.roomEffect === RoomEffect.ChenilleIgnition) && action === UserAction.NuclearIgnition) {
           this.roomEffectsService.checkIgnition(room.name);
-        }
-        if (!(room.roomEffect === RoomEffect.Ignition) && action === UserAction.ChenilleIgnition) {
+          this.broadCastToRoomOfUser(updatedUserId);
+        } else if (!(room.roomEffect === RoomEffect.Ignition) && action === UserAction.ChenilleIgnition) {
           this.roomEffectsService.checkChenille(room.name);
+          this.broadCastToRoomOfUser(updatedUserId);
         }
-        this.broadCastToRoomOfUser(updatedUserId);
+        if (action === null) this.broadCastToRoomOfUser(updatedUserId);
       }
     }
   }
