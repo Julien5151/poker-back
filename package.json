@@ -1,9 +1,8 @@
 {
   "name": "poker-philippe-back",
   "version": "1.0.0",
-  "description": "",
-  "author": "",
-  "private": true,
+  "description": "Premium, totally serious, FOSS Poker Planning",
+  "author": "Julien CLAUDEL",
   "license": "MIT",
   "engines": {
     "node": "18.x.x"
