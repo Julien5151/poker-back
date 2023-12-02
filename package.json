@@ -1,12 +1,12 @@
 {
   "name": "poker-back",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "",
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": "16.x.x"
+    "node": "18.x.x"
   },
   "scripts": {
     "build": "nest build",
