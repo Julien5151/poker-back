@@ -55,6 +55,14 @@ export interface ResetVotesMessage {
   event: MessageType.ResetVotes;
 }
 
+export interface NoFunOnMessage {
+  event: MessageType.NoFunOn;
+}
+
+export interface NoFunOffMessage {
+  event: MessageType.NoFunOff;
+}
+
 export interface UserActionMessage {
   event: MessageType.UserActionUpdate;
   data: UserAction | null;

@@ -18,6 +18,7 @@ export class RoomService extends CrudService<Room> {
         [RoomEffect.Ignition]: 0,
         [RoomEffect.Explosion]: 0,
         [RoomEffect.Chenille]: 0,
+        [RoomEffect.NoFun]: 0,
       },
       intervalId: null,
     };
