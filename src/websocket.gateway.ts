@@ -61,6 +61,16 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     this.pokerService.handleHiddenUpdate(client);
   }
 
+  @SubscribeMessage(MessageType.NoFunOn)
+  handleNoFunOn(@ConnectedSocket() client: WebSocket): void {
+    this.pokerService.handleNoFunOn(client);
+  }
+
+  @SubscribeMessage(MessageType.NoFunOff)
+  handleNoFunOff(@ConnectedSocket() client: WebSocket): void {
+    this.pokerService.handleNoFunOff(client);
+  }
+
   @SubscribeMessage(MessageType.ResetVotes)
   handleResetVotes(@ConnectedSocket() client: WebSocket): void {
     this.pokerService.handleResetVotes(client);

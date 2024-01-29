@@ -6,7 +6,6 @@ import { UserEffect } from 'src/shared/enums/user-effect.enum';
 import { VoteValue } from 'src/shared/enums/vote-value.enum';
 import { UserSuccessfullyConnectedMessage } from 'src/shared/interfaces/ws-message.interface';
 import { ROOM_NAME_REGEX } from 'src/shared/regex/room-name.regex';
-import { RoomName } from 'src/shared/types/room-name.type';
 import { UserId } from 'src/shared/types/user-id.type';
 import { WebSocket } from 'ws';
 import { BroadcastService } from './broadcast.service';
@@ -75,9 +74,10 @@ export class PokerService {
 
   public handleUserActionUpdate(action: UserAction, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
+    const room = this.roomService.getRoomFromUserId(updatedUserId);
+    if (room.roomEffect === RoomEffect.NoFun) return;
     if (updatedUserId) {
       this.userService.update(updatedUserId, { action });
-      const room = this.roomService.getRoomFromUserId(updatedUserId);
       if (room) {
         if (!(room.roomEffect === RoomEffect.Chenille) && action === UserAction.NuclearIgnition) {
           this.roomEffectsService.checkIgnition(room.name);
@@ -99,6 +99,8 @@ export class PokerService {
 
   public handleUserEffectUpdate(effect: UserEffect | null, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
+    const room = this.roomService.getRoomFromUserId(updatedUserId);
+    if (room.roomEffect === RoomEffect.NoFun) return;
     if (updatedUserId) {
       this.userService.update(updatedUserId, { effect });
       this.broadCastToRoomOfUser(updatedUserId);
@@ -113,6 +115,24 @@ export class PokerService {
         this.roomEffectsService.checkFanfare(room.name);
       }
       this.roomService.update(room.name, { isHidden: !room.isHidden });
+      this.broadCastToRoomOfUser(userInitiatingActionId);
+    }
+  }
+
+  public handleNoFunOn(websocket: WebSocket): void {
+    const userInitiatingActionId = this.broadcastService.getUserIdFromWs(websocket);
+    const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
+    if (room) {
+      this.roomService.update(room.name, { roomEffect: RoomEffect.NoFun });
+      this.broadCastToRoomOfUser(userInitiatingActionId);
+    }
+  }
+
+  public handleNoFunOff(websocket: WebSocket): void {
+    const userInitiatingActionId = this.broadcastService.getUserIdFromWs(websocket);
+    const room = this.roomService.getRoomFromUserId(userInitiatingActionId);
+    if (room) {
+      this.roomService.update(room.name, { roomEffect: null });
       this.broadCastToRoomOfUser(userInitiatingActionId);
     }
   }
@@ -133,12 +153,5 @@ export class PokerService {
     if (userRoomName) {
       this.broadcastService.broadcastRoomUpdate(userRoomName);
     }
-  }
-
-  private areAllUsersOfRoomAskingChenille(roomName: RoomName): boolean {
-    const room = this.roomService.get(roomName);
-    if (!room) return false;
-    const users = this.roomService.getUserIds(roomName).map((userId) => this.userService.get(userId));
-    return !!(users.length > 0 && users.length === users.filter((user) => user.action === UserAction.ChenilleIgnition).length);
   }
 }
