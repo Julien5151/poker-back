@@ -75,7 +75,7 @@ export class PokerService {
   public handleUserActionUpdate(action: UserAction, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
     const room = this.roomService.getRoomFromUserId(updatedUserId);
-    if (room.roomEffect === RoomEffect.NoFun) return;
+    if (room?.roomEffect === RoomEffect.NoFun) return;
     if (updatedUserId) {
       this.userService.update(updatedUserId, { action });
       if (room) {
@@ -100,7 +100,7 @@ export class PokerService {
   public handleUserEffectUpdate(effect: UserEffect | null, websocket: WebSocket): void {
     const updatedUserId = this.broadcastService.getUserIdFromWs(websocket);
     const room = this.roomService.getRoomFromUserId(updatedUserId);
-    if (room.roomEffect === RoomEffect.NoFun) return;
+    if (room?.roomEffect === RoomEffect.NoFun) return;
     if (updatedUserId) {
       this.userService.update(updatedUserId, { effect });
       this.broadCastToRoomOfUser(updatedUserId);
