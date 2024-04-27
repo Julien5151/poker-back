@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.0.0",
     "@nestjs/platform-ws": "^10.0.0",
+    "@nestjs/serve-static": "^4.0.2",
     "@nestjs/websockets": "^10.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",

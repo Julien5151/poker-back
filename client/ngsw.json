@@ -1,0 +1,139 @@
+{
+  "configVersion": 1,
+  "timestamp": 1714205839444,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/main.js",
+        "/manifest.webmanifest",
+        "/polyfills.js",
+        "/runtime.js",
+        "/styles.css",
+        "/vendor.js"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets-mp3",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/sounds/alarm.mp3",
+        "/assets/sounds/arretez.mp3",
+        "/assets/sounds/chenille.mp3",
+        "/assets/sounds/explosion.mp3",
+        "/assets/sounds/fanfare.mp3",
+        "/assets/sounds/issou.mp3",
+        "/assets/sounds/leviosa.mp3",
+        "/assets/sounds/oh-yeah.mp3",
+        "/assets/sounds/philippe.mp3",
+        "/assets/sounds/putain-genial.mp3",
+        "/assets/sounds/taps.mp3"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets-video",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/videos/video.webm"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/images/confetti.png",
+        "/assets/images/nuclear.png",
+        "/assets/images/rip.png",
+        "/assets/images/speech-bubble.svg",
+        "/speech-bubble.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/icons/icon-128x128.png": "67845f2992b7578654beac02a2c23005f2992709",
+    "/assets/icons/icon-144x144.png": "859fad21e75796d965ee54c232e0360e8173cf46",
+    "/assets/icons/icon-152x152.png": "852fe3a1a03f4c9480324a8c4b529987e7c2f1f6",
+    "/assets/icons/icon-192x192.png": "4235873e49fc07d4d4c80bd6c90874f674e3b623",
+    "/assets/icons/icon-384x384.png": "912a4d9587a136d2d5d53d9b63ee5f34cd923974",
+    "/assets/icons/icon-512x512.png": "d856412e89ed1157a8c58c455751985fe72fd70c",
+    "/assets/icons/icon-72x72.png": "9cd879295075d6605b03cb55de7ab67aa025b27b",
+    "/assets/icons/icon-96x96.png": "1191d0855623394aefd2ab19ac9c82a95f3681b8",
+    "/assets/images/confetti.png": "9af55a775347d806f2e338b3448e4fb07641e90f",
+    "/assets/images/nuclear.png": "ca8cf17dc2207b04479a4e3350f1b90b55ec3bbc",
+    "/assets/images/rip.png": "fbdd14e74f78dae94dc29f7aac8ebafb74e1338c",
+    "/assets/images/speech-bubble.svg": "953c4b7c23ed1b10dc75b8d8f368075843128407",
+    "/assets/sounds/alarm.mp3": "0703b1fa0a6e56f3f9b0f334a154b9c99a854d7e",
+    "/assets/sounds/arretez.mp3": "76f0f6b869aaffdc6cb6d8188f69ded0505526fd",
+    "/assets/sounds/chenille.mp3": "90c83d9300dc0b73c83ba989aba6a997f8962422",
+    "/assets/sounds/explosion.mp3": "43819f228899acca61246882b4518e43a7e3d476",
+    "/assets/sounds/fanfare.mp3": "bba221e7db6ff354d3538ff5f4349651a16779de",
+    "/assets/sounds/issou.mp3": "c5c4addd1ca70d172975c4cda9ed77700215d2a0",
+    "/assets/sounds/leviosa.mp3": "9d76a7dfc8bcdb5aec731fdc02ef69bff167a7e7",
+    "/assets/sounds/oh-yeah.mp3": "850b6371947b0bee554a012a3e074cc2b3853737",
+    "/assets/sounds/philippe.mp3": "4671435bdfa771a344645ab53ddd5eb4fc1dc110",
+    "/assets/sounds/putain-genial.mp3": "388e320d4a2ee93ecc95fb05cd317620a47de897",
+    "/assets/sounds/taps.mp3": "b35e72d51bee5d66e6da99c307de7c9246eea9b9",
+    "/assets/videos/video.webm": "52f913f329fddd26bf37992d779ff64fe74c4ae8",
+    "/favicon.ico": "f9d019be93df3816ce535ab79f43189441348861",
+    "/index.html": "897885855536453a1b515936b32141fed855c69b",
+    "/main.js": "51e28131459f5fa4a08187ac3e452856a38d52af",
+    "/manifest.webmanifest": "ddae43c6e71be576d5cf6498847dd6c8be2e7194",
+    "/polyfills.js": "713307475585c29cda62c5f457ecc0bcb3205171",
+    "/runtime.js": "f47aad3f83661a546b83d97c11a5190a0773d10c",
+    "/speech-bubble.svg": "953c4b7c23ed1b10dc75b8d8f368075843128407",
+    "/styles.css": "a132e973d6e2e5ec68d1499feff35578a55e9662",
+    "/vendor.js": "0980e6951f28300b5f74dcf63b7e8814e2a5e3cd"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
