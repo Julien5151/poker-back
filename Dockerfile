@@ -1,5 +1,5 @@
 ﻿FROM node:20-alpine AS base
-EXPOSE 8080
+EXPOSE 8081
 
 FROM node:20-alpine AS build
 COPY . .
