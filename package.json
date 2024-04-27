@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "nest build",
+    "build:docker": "docker build -t=poker-philippe -f ./Dockerfile .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
