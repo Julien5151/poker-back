@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 @Injectable()
 export class BroadcastService {
   private connectedClients = new Map<UserId, WebSocket>();
-  private readonly PING_INTERVAL = 30000;
+  private readonly PING_INTERVAL = 5000;
 
   constructor(private readonly roomService: RoomService, private readonly userService: UserService) {}
 
