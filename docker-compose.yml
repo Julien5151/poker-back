@@ -1,0 +1,28 @@
+﻿services:
+  poker-philippe:
+    image: poker-philippe
+    ports:
+      - '8081:8081'
+    restart: always
+    environment:
+      PORT: 8081
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    restart: always
+    depends_on:
+      - poker-philippe
+    environment:
+      #DOMAINS: "example.com -> http://app:8080, "
+      DOMAINS: 'poker-philippe.jcl-web.freeboxos.fr -> http://poker-philippe:8081'
+      #STAGE: "local" # Don't use production until staging works
+      STAGE: 'production' # Don't use production until staging works
+      WEBSOCKET: true
+      # FORCE_RENEW: 'true'
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+
+volumes:
+  https-portal-data:
