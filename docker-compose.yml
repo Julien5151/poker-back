@@ -16,7 +16,7 @@
       - poker-philippe
     environment:
       #DOMAINS: "example.com -> http://app:8080, "
-      DOMAINS: 'poker-philippe.jcl-web.freeboxos.fr -> http://poker-philippe:8081'
+      DOMAINS: 'jcl-web.freeboxos.fr -> http://poker-philippe:8081'
       #STAGE: "local" # Don't use production until staging works
       STAGE: 'production' # Don't use production until staging works
       WEBSOCKET: true
